@@ -7,57 +7,88 @@ import {
   createSubscriptionCheckout,
   createYearlySubscriptionCheckout,
 } from "./actions";
-import { config } from "@/srm.config";
-import { CheckIcon } from "lucide-react";
+
+const pricingPlans = [
+  {
+    name: "Monthly",
+    price: 15,
+    interval: "month",
+    features: [
+      "Access to all features",
+      "1000 files per month",
+      "120 min audio transcription",
+      "24/7 support",
+    ],
+    action: createSubscriptionCheckout,
+  },
+  {
+    name: "Yearly",
+    price: 150,
+    interval: "year",
+    features: [
+      "All Monthly features",
+      "2 months free",
+      "Priority support",
+      "Early access to new features",
+    ],
+    action: createYearlySubscriptionCheckout,
+  },
+  {
+    name: "Lifetime",
+    price: 250,
+    interval: "one-time",
+    features: [
+      "Unlimited access forever",
+      "All Yearly features",
+      "Exclusive workshops",
+      "Personal onboarding",
+    ],
+    action: createOneTimePaymentCheckout,
+  },
+];
 
 export default function PlanSelectionPage() {
   const handlePlanSelection = async (plan: string) => {
-    if (plan === "Lifetime") {
-      await createOneTimePaymentCheckout();
-    } else if (plan === "Monthly") {
-      await createSubscriptionCheckout();
-    } else if (plan === "Yearly") {
-      await createYearlySubscriptionCheckout();
+    const selectedPlan = pricingPlans.find(p => p.name === plan);
+    if (selectedPlan) {
+      await selectedPlan.action();
     }
   };
 
-  const renderPricingCard = (planKey: string, product: any, priceKey: string) => {
-    const price = product.prices[priceKey];
+  const renderPricingCard = (plan: typeof pricingPlans[0]) => {
     return (
-      <Card key={planKey} className="border border-stone-300 p-6 flex flex-col">
-        <h2 className="text-2xl mb-2 font-semibold">{planKey} Plan</h2>
-        <p className="text-4xl font-bold mb-4">
-          ${price.amount / 100}
-          {price.type === 'recurring' && (
-            <span className="text-lg font-normal">/{price.interval}</span>
+      <Card key={plan.name} className="flex flex-col p-6 border border-stone-300">
+        <h2 className="mb-2 text-2xl font-semibold">{plan.name} Plan</h2>
+        <p className="mb-4 text-4xl font-bold">
+          ${plan.price}
+          {plan.interval !== "one-time" && (
+            <span className="text-lg font-normal">/{plan.interval}</span>
           )}
         </p>
-        <ul className="mb-6 flex-grow">
-          {product.features.map((feature: string, index: number) => (
+        <ul className="flex-grow mb-6">
+          {plan.features.map((feature, index) => (
             <li key={index} className="flex items-center mb-2">
-              <CheckIcon className="w-5 h-5 mr-2 text-green-500" />
+              <span className="mr-2 text-green-500">✓</span>
               <span>{feature}</span>
             </li>
           ))}
         </ul>
         <Button
-          onClick={() => handlePlanSelection(planKey)}
-          className="bg-stone-800 text-stone-100 px-4 py-2 w-full hover:bg-stone-700 transition-colors"
+          onClick={() => handlePlanSelection(plan.name)}
+          className="w-full px-4 py-2 transition-colors bg-stone-800 text-stone-100 hover:bg-stone-700"
         >
-          {planKey === "Lifetime" ? "Get Lifetime Access" : `Choose ${planKey} Plan`}
+          {plan.name === "Lifetime" ? "Get Lifetime Access" : `Choose ${plan.name} Plan`}
         </Button>
       </Card>
     );
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-5xl mb-6 font-bold text-center">Choose Your Plan</h1>
-      <p className="text-xl mb-8 text-center">Select the perfect plan for your needs.</p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {renderPricingCard("Monthly", config.products.Hobby, "monthly")}
-        {renderPricingCard("Yearly", config.products.Hobby, "yearly")}
-        {renderPricingCard("Lifetime", config.products.Lifetime, "lifetime")}
+    <section className="max-w-6xl px-4 py-12 mx-auto">
+      <h1 className="mb-6 text-5xl font-bold text-center">Choose Your Plan</h1>
+      <p className="mb-8 text-xl text-center">Select the perfect plan for your needs.</p>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {pricingPlans.map(renderPricingCard)}
       </div>
     </section>
   );

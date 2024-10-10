@@ -1,12 +1,12 @@
-import { createSRM } from "@u22n/srm";
-import { config } from "../srm.config";
-import Stripe from "stripe";
+// This is a placeholder for the removed SRM functionality
+const dummySRM = {
+  // Add any necessary dummy methods or properties here
+  // For example:
+  createCheckoutSession: async () => {
+    console.warn('SRM functionality has been removed');
+    return null;
+  },
+  // Add other dummy methods as needed
+};
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2022-11-15",
-});
-
-type Config = typeof config;
-const srm = createSRM<Config>(config, { stripe });
-
-export default srm;
+export default dummySRM;

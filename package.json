@@ -26,6 +26,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "latest",
+    "@ai-sdk/google": "latest",
     "@ai-sdk/openai": "^0.0.40",
     "@ai-sdk/react": "^0.0.58",
     "@emotion/styled": "^11.13.0",
@@ -37,6 +39,7 @@
     "ai": "^3.3.36",
     "axios": "^1.6.2",
     "chokidar": "^3.6.0",
+    "drizzle-orm": "^0.31.4",
     "form-data": "^4.0.0",
     "framer-motion": "^11.5.4",
     "fuse.js": "^7.0.0",
@@ -48,6 +51,7 @@
     "node-fetch": "^3.3.2",
     "ollama-ai-provider": "^0.7.0",
     "openai": "^4.19.0",
+    "pg": "^8.11.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",

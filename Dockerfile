@@ -2,22 +2,33 @@
 FROM node:18
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /web
 
-# Copy package.json and package-lock.json to the working directory
-COPY app/package*.json ./
+# Install pnpm
+RUN npm install -g pnpm
 
-# Install the application dependencies
-RUN npm ci
+# Set up pnpm global bin directory
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="${PATH}:${PNPM_HOME}"
+
+# Copy package.json to the working directory
+COPY web/package.json ./
+
+# Install the application dependencies and update lockfile
+RUN pnpm install
+RUN pnpm install --lockfile-only
 
 # Copy the rest of the application code to the working directory
-COPY app/ .
+COPY web/ .
+
+# Copy the .env file
+COPY .env .
 
 # Build the Next.js application
-RUN npm run build
+RUN pnpm run build
 
 # Expose the port on which the application will run
 EXPOSE 3000
 
 # Set the command to run the application
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]

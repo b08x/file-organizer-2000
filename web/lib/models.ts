@@ -3,9 +3,10 @@ import { openai } from "@ai-sdk/openai";
 
 const models = {
   "gpt-4o": openai("gpt-4o"),
-  "gpt-4o-2024-08-06": openai("gpt-4o-2024-08-06", ),
+  "gpt-4o-2024-08-06": openai("gpt-4o-2024-08-06"),
   "gpt-4o-mini": openai("gpt-4o-mini"),
   "claude-3-5-sonnet-20240620": anthropic("claude-3-5-sonnet-20240620"),
+  // Removed Google model
 };
 
 export const getModel = (name: string) => {

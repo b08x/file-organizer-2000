@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/vercel-postgres";
+import { drizzle } from 'drizzle-orm/node-postgres';
 import {
   pgTable,
   serial,
@@ -6,12 +6,18 @@ import {
   text,
   timestamp,
   uniqueIndex,
-} from "drizzle-orm/pg-core";
-import { eq, sql } from "drizzle-orm";
-import { sql as psql } from "@vercel/postgres";
+} from 'drizzle-orm/pg-core';
+import { eq, sql } from 'drizzle-orm';
+import { Pool } from 'pg';
+
+// Create a new database connection
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+});
 
 // Use this object to send drizzle queries to your DB
-export const db = drizzle(psql);
+export const db = drizzle(pool);
+
 // Create a pgTable that maps to a table in your DB to track user usage
 export const UserUsageTable = pgTable(
   "user_usage",
@@ -38,8 +44,8 @@ export const UserUsageTable = pgTable(
   }
 );
 
-// createOrUpdateUserUsage will create a new record if one does not exist for the user
-// or update the existing record if one does exist
+// The rest of the file remains unchanged
+// createOrUpdateUserUsage function
 export async function createOrUpdateUserUsage(
   userId: string,
   billingCycle: string
@@ -62,6 +68,7 @@ export async function createOrUpdateUserUsage(
   // Record created or updated, exit the retry loop
 }
 
+// incrementApiUsage function
 export async function incrementApiUsage(userId: string): Promise<void> {
   console.log("Incrementing API Usage for User ID:", userId);
 
@@ -82,6 +89,7 @@ export async function incrementApiUsage(userId: string): Promise<void> {
   // Increment successful, exit the retry loop
 }
 
+// checkApiUsage function
 export const checkApiUsage = async (userId: string) => {
   console.log("Checking API Usage for User ID:", userId);
   try {
@@ -118,6 +126,7 @@ export const checkApiUsage = async (userId: string) => {
   }
 };
 
+// incrementTokenUsage function
 export async function incrementTokenUsage(
   userId: string,
   tokens: number
@@ -146,6 +155,8 @@ export async function incrementTokenUsage(
     console.error(error);
   }
 }
+
+// checkTokenUsage function
 export const checkTokenUsage = async (userId: string) => {
   console.log("Checking token usage for User ID:", userId);
   try {
@@ -180,7 +191,7 @@ export const checkTokenUsage = async (userId: string) => {
   }
 };
 
-// check if has active subscription
+// checkUserSubscriptionStatus function
 export const checkUserSubscriptionStatus = async (userId: string) => {
   console.log("Checking subscription status for User ID:", userId);
   try {
@@ -207,6 +218,7 @@ export const checkUserSubscriptionStatus = async (userId: string) => {
   }
 };
 
+// createOrUpdateUserSubscriptionStatus function
 export async function createOrUpdateUserSubscriptionStatus(
   userId: string,
   subscriptionStatus: string,
@@ -242,6 +254,7 @@ export async function createOrUpdateUserSubscriptionStatus(
   }
 }
 
+// handleFailedPayment function
 export async function handleFailedPayment(
   userId: string,
   subscriptionStatus: string,

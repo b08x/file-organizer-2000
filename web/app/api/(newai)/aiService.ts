@@ -236,6 +236,15 @@ export async function extractTextFromImage(
 
       return response.text.trim() + "\n\n";
     }
+    case "gemini-1.5-pro-latest": {
+      const response = await generateText({
+        model,
+        //@ts-ignore
+        messages,
+      });
+
+      return response.text.trim() + "\n\n";
+    }
     default: {
       const defaultResponse = await generateText({
         model,
